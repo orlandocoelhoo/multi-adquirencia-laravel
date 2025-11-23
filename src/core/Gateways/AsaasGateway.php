@@ -11,4 +11,9 @@ class AsaasGateway implements PaymentGatewayInterface
     {
         return ['gateway' => 'Asaas', 'status' => 'success'];
     }
+
+    public function save()
+    {
+
+    }
 }

@@ -11,4 +11,10 @@ class CieloGateway implements PaymentGatewayInterface
     {
         return ['gateway' => 'Cielo', 'status' => 'success'];
     }
+
+    public function save()
+    {
+
+    }
+
 }
