@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterUserRequest;
-use Core\Users\RegisterUser;
+use Core\UseCase\Users\RegisterUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
