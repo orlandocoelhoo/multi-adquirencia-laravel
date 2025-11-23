@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('gateway');
+            $table->string('name_on_card');
+            $table->string('installment');
+            $table->string('due_date');
             $table->decimal('amount', 10, 2);
             $table->string('status');
             $table->json('raw_response');
