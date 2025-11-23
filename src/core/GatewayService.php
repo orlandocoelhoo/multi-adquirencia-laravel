@@ -7,9 +7,9 @@ use Core\Gateways\CieloGateway;
 
 class GatewayService
 {
-    protected $gateway;
+    public array $gateway = [];
 
-    public function __construct($gateway)
+    public function __construct()
     {
         $this->gateway = [
             new CieloGateway(),
@@ -29,6 +29,5 @@ class GatewayService
         }
 
         throw new \Exception("Nenhum gateway conseguiu processar o pagamento.");
-
     }
 }
