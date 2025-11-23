@@ -1,11 +1,13 @@
 <?php
-namespace Core\Users;
+namespace Core\UseCase\Users;
+
+use App\Models\User;
 
 class RegisterUser
 {
-    public static function execute(string $name, int $tenantId, string $email, string $password)
+    public static function execute(string $name, int $tenantId, string $email, string $password): User
     {
-        $user = \App\Models\User::create([
+        $user = User::create([
             'name' => $name,
             'tenant_id' => $tenantId,
             'email' => $email,
