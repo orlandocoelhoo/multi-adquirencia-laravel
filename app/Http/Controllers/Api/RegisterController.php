@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterTenancyRequest;
 use App\Http\Requests\RegisterUserRequest;
+use Core\Enums\Status;
+use Core\UseCase\Tenancy\RegisterTenancy;
 use Core\UseCase\Users\RegisterUser;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    public function register(RegisterUserRequest $request)
+    public function registerUser(RegisterUserRequest $request)
     {
         $user = RegisterUser::execute(
             $request->name,
@@ -20,5 +21,16 @@ class RegisterController extends Controller
         );
 
         return response()->json(['message' => 'User register successful!', 'user' => $user], 201);
+    }
+
+    public function registerTenancy(RegisterTenancyRequest $request)
+    {
+
+        $tenancy = RegisterTenancy::execute(
+            $request->name,
+            $request->status == 'active' ? Status::ACTIVE : Status::INACTIVE
+        );
+
+        return response()->json(['message' => 'Tenancy register successful!', 'tenancy' => $tenancy], 201);
     }
 }
