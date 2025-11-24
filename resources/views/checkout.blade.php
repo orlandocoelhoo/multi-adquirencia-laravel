@@ -23,9 +23,19 @@
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
 
             <div class="w-full max-w-xl mx-auto">
+                <div id="result" class="hidden bg-green-100 border-t-4 border-green-500 rounded-b text-green-900 px-4 py-3 shadow-md" role="alert">
+                    <div class="flex">
+                        <div class="py-1">
+                            <svg class="fill-current h-6 w-6 text-green-500 mr-4" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M512 64a448 448 0 1 1 0 896 448 448 0 0 1 0-896zm-55.808 536.384-99.52-99.584a38.4 38.4 0 1 0-54.336 54.336l126.72 126.72a38.272 38.272 0 0 0 54.336 0l262.4-262.464a38.4 38.4 0 1 0-54.272-54.336L456.192 600.384z"></path></g></svg>
+                        </div>
+                        <div>
+                            <p class="font-bold" id="text-message"></p>
+                        </div>
+                    </div>
+                </div>
                 <form class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" id="payment-form" method="post">
                     <div class="mb-4 text-center">
-                        <h1 class="text-2xl">Pagamento</h1>
+                        <h1 class="text-2xl">Simulação de Pagamento</h1>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-400 text-sm font-bold mb-2" for="name_on_card">
@@ -38,18 +48,21 @@
                             Nome do Cartão
                         </label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight focus:outline-none focus:shadow-outline" id="name" name="name" type="text">
+                        <p class="input-error text-red-600 text-sm mt-1" data-error-for="name"></p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="number">
                             Numero do Cartão
                         </label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight focus:outline-none focus:shadow-outline" id="number" name="number" type="text">
+                        <p class="input-error text-red-600 text-sm mt-1" data-error-for="number"></p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="due_date">
                             Data de Validade
                         </label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight focus:outline-none focus:shadow-outline" id="due_date" name="due_date" type="text">
+                        <p class="input-error text-red-600 text-sm mt-1" data-error-for="due_date"></p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-bold mb-2" for="installment">
@@ -66,6 +79,7 @@
                             Codigo de Segurança
                         </label>
                         <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-500 leading-tight focus:outline-none focus:shadow-outline" id="cvv" name="cvv" type="text">
+                        <p class="input-error text-red-600 text-sm mt-1" data-error-for="cvv"></p>
                     </div>
                     <div class="flex items-center justify-between">
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
@@ -75,12 +89,22 @@
                 </form>
             </div>
 
-            <pre id="result"></pre>
+
         </div>
 
         <script>
             document.getElementById('payment-form').addEventListener('submit', async function(e){
                 e.preventDefault();
+
+                // limpar erros visuais antes de enviar novamente
+                document.querySelectorAll('.border-red-500').forEach(el => {
+                    el.classList.remove('border-red-500');
+                });
+
+                // limpar mensagens antigas
+                document.querySelectorAll('.input-error').forEach(el => {
+                    el.textContent = '';
+                });
 
                 let form = new FormData(this);
 
@@ -93,10 +117,75 @@
                     body: form
                 });
 
-                const data = await response.json();
 
-                document.getElementById('result').textContent = JSON.stringify(data, null, 4);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.log(errorData.errors);
+                    // erro de validação padrão do Laravel
+                    if (response.status === 422) {
+
+                        Object.entries(errorData.errors).forEach(([field, messages]) => {
+
+                            // marcar input como vermelho
+                            const input = document.querySelector(`[name="${field}"]`);
+                            if (input) input.classList.add('border-red-500');
+
+                            // exibir primeira mensagem abaixo do input
+                            const errorTag = document.querySelector(`[data-error-for="${field}"]`);
+                            if (errorTag) errorTag.textContent = messages[0];
+                        });
+
+                    }
+
+                    return; // evita continuar
+                }
+
+                this.reset();
+                fadeOut(document.getElementById('payment-form'), 1000);
+
+                const data = await response.json();
+                document.getElementById('result').classList.remove('hidden');
+                if(data.status){
+                    document.getElementById('text-message').textContent = "Pagamento realizado com sucesso!";
+                }else{
+                    document.getElementById('text-message').textContent = "Ocorreu um erro ao processar o pagamento.";
+                }
             });
+
+
+            function fadeOut(element, duration = 1000) {
+                let opacity = 1;
+                const interval = 50;
+                const decrement = interval / duration;
+
+                const fade = setInterval(() => {
+                    opacity -= decrement;
+                    element.style.opacity = opacity;
+
+                    if (opacity <= 0) {
+                        clearInterval(fade);
+                        element.style.display = "none";
+                    }
+                }, interval);
+            }
+
+            document.getElementById('due_date').addEventListener('input', function (e) {
+                let value = e.target.value;
+
+                // remove tudo que não for número
+                value = value.replace(/\D/g, "");
+
+                // limita a 6 dígitos (MMYYYY)
+                value = value.substring(0, 6);
+
+                // se tiver mais de 2 dígitos, insere a barra
+                if (value.length > 2) {
+                    value = value.replace(/^(\d{2})(\d{1,4})$/, "$1/$2");
+                }
+
+                e.target.value = value;
+            });
+
         </script>
     </body>
 </html>

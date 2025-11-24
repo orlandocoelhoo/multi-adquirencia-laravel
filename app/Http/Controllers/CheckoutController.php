@@ -8,7 +8,8 @@ class CheckoutController extends Controller
 {
     public function index()
     {
-        $amount = 1000; // Valor em centavos (R$ 1.000,00)
+        
+        $amount = 1000;
         return view('checkout', compact('amount'));
     }
 }
