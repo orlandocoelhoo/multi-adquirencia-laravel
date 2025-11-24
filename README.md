@@ -3,9 +3,13 @@
 ## Execute os seguintes comandos
 
 git clone https://github.com/orlandocoelhoo/multi-adquirencia-laravel.git
+
 cd multi-adquirencia-laravel
+
 composer install
+
 cp .env.example .env
+
 php artisan key:generate
 
 ## Edite os dados de conexão com o banco de dados no arquivo .env com o editor de sua escolha!
