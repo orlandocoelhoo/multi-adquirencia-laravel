@@ -12,9 +12,9 @@ cp .env.example .env
 
 php artisan key:generate
 
-Edite os dados de conexão com o banco de dados no arquivo .env com o editor de sua escolha!
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
+Edite os dados de conexão com o banco de dados no arquivo .env com o editor de sua escolha!  
+DB_CONNECTION=mysql  
+DB_HOST=127.0.0.1  
 DB_PORT=3306
 DB_DATABASE=multi_adquirencia_laravel
 DB_USERNAME=root
