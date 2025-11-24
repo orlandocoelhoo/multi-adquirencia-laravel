@@ -183,6 +183,13 @@
                     value = value.replace(/^(\d{2})(\d{1,4})$/, "$1/$2");
                 }
 
+                if (value.length >= 2) {
+                    let month = parseInt(value.substring(0, 2));
+                    if (month < 1 || month > 12) {
+                        value = "12" + value.substring(2);
+                    }
+                }
+
                 e.target.value = value;
             });
 
