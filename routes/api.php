@@ -7,7 +7,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PaymentController;
 
 Route::prefix('v1')->group(function () {
-    Route::post('users/register', [RegisterController::class, 'register']);
+    Route::post('tenancy/register', [RegisterController::class, 'registerTenancy']);
+    Route::post('users/register', [RegisterController::class, 'registerUser']);
     Route::post('login', [AuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
