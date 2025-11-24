@@ -93,6 +93,7 @@
         </div>
 
         <script>
+            const API_TOKEN = "{{ $token }}";
             document.getElementById('payment-form').addEventListener('submit', async function(e){
                 e.preventDefault();
 
@@ -111,16 +112,15 @@
                 const response = await fetch('/api/v1/payment', {
                     method: 'POST',
                     headers: {
-                        "Authorization": "Bearer 1|aI82DnuLBIpInUAsnrl6W1lHEZI1CnsFCNJLb9It8f8b2c58",
                         "Accept": "application/json",
+                        "Authorization": `Bearer ${API_TOKEN}`,
                     },
                     body: form
                 });
 
-
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.log(errorData.errors);
+
                     // erro de validação padrão do Laravel
                     if (response.status === 422) {
 
